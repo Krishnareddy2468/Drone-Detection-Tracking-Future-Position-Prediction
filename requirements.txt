@@ -1,0 +1,9 @@
+# Core runtime. Tested on Python 3.9-3.12 with the versions noted in comments.
+ultralytics>=8.2.0        # YOLO + ByteTrack        (tested: 8.4.68)
+torch>=2.2.0              # LSTM + MPS/CUDA backend (tested: 2.8.0)
+numpy>=1.24               # Kalman filter, metrics  (tested: 2.0.2)
+opencv-python>=4.8        # video IO + annotation   (tested: 4.13.0)
+
+# Optional:
+#   roboflow   -- only if you download a drone dataset through the Roboflow API
+#   motmetrics -- only if you obtain MOT-format ground truth and want MOTA/IDF1
