@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: tests (python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # CPU-only torch keeps the CI image small and the install fast.
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements-dev.txt
+          # headless runners have no libGL; swap in the headless OpenCV build
+          pip uninstall -y opencv-python
+          pip install opencv-python-headless
+
+      - name: Run tests
+        run: pytest
+
+      - name: Smoke-test the benchmark end to end
+        run: |
+          python src/benchmark.py --synthetic --H 5 --epochs 5 \
+            --out "${RUNNER_TEMP}/benchmark_results.json"
