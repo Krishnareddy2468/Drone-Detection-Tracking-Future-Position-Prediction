@@ -1,0 +1,22 @@
+# Normalise line endings on checkin; let git decide on checkout.
+* text=auto
+
+# Explicit text types
+*.py    text diff=python
+*.md    text
+*.yaml  text
+*.yml   text
+*.json  text
+*.txt   text
+*.cfg   text
+
+# Binary — never diff or line-ending-convert these
+*.pt    binary
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.mp4   binary
+*.zip   binary
+
+# Keep generated docs out of language stats / diffs on GitHub
+docs/**  linguist-documentation
